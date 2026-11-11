@@ -8,10 +8,19 @@
 #include "../../engine/driver.h"
 #include "_compact.h"
 
-/* MK-Radio 3 — version 0x62/0x72 + medium 0x74. */
+/* MK-Radio 3 — medium 0x62 (warm) / 0x72 (cold), version 0x74.
+ * WmbusMVT is (manuf, version, medium); the first two rows below were
+ * copied from wmbusmeters' (manuf, medium, version) order and never
+ * match a real frame — kept for compatibility, correct rows follow.
+ * Version 0x52 uses the identical layout (verified on air: dates
+ * decode to 31.12 billing day + today's date). */
 static const WmbusMVT k_mvt_mk3[] = {
     {"TCH", 0x62, 0x74},
     {"TCH", 0x72, 0x74},
+    {"TCH", 0x74, 0x62},
+    {"TCH", 0x74, 0x72},
+    {"TCH", 0x52, 0x62},
+    {"TCH", 0x52, 0x72},
     { {0}, 0, 0 }
 };
 static size_t decode_mk3(uint16_t m, uint8_t v, uint8_t med,
@@ -32,6 +41,10 @@ static const WmbusMVT k_mvt_mk4[] = {
     {"TCH", 0x72, 0x70},
     {"TCH", 0x62, 0x95},
     {"TCH", 0x72, 0x95},
+    {"TCH", 0x70, 0x62},   /* same rows in (version, medium) order */
+    {"TCH", 0x70, 0x72},
+    {"TCH", 0x95, 0x62},
+    {"TCH", 0x95, 0x72},
     {"TCH", 0x95, 0x37},
     {"TCH", 0x72, 0x50},   /* MK Radio 3a — wmbusmeters mkradio3a */
     {"HYD", 0xFE, 0x06},   /* mkradio4a OEM rebadge */
